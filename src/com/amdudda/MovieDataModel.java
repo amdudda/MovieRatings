@@ -106,8 +106,8 @@ public class MovieDataModel extends AbstractTableModel {
         try {
             resultSet.absolute(row + 1);
             resultSet.updateInt(MovieDatabase.RATING_COLUMN, newRating);
-            resultSet.updateRow();
-            fireTableDataChanged();
+            resultSet.updateRow();  // updates the database
+            fireTableDataChanged(); // updates the GUI display
         } catch (SQLException e) {
             System.out.println("error changing rating " + e);
         }
@@ -119,14 +119,20 @@ public class MovieDataModel extends AbstractTableModel {
     //We only want user to be able to edit column 2 - the rating column.
     //If this method always returns true, the whole table will be editable.
 
-    //TODO how can we avoid using a magic number (if col==3) ) here? This code depends on column 3 being the rating.
+    //DONE: how can we avoid using a magic number (if col==3) ) here? This code depends on column 3 being the rating.
     //This might change if we were to add more data to our table, for example storing names of people who created the review.
     //TODO To fix: look into table column models, and generate the number columns based on the columns found in the ResultSet.
     public boolean isCellEditable(int row, int col){
-        if (col == 3) {
-            return true;
+        try {
+            // debugging: System.out.println(resultSet.getMetaData().getColumnLabel(col + 1));
+            if (resultSet.getMetaData().getColumnLabel(col+1).equals(MovieDatabase.RATING_COLUMN)) {
+                return true;
+            }
+            return false;
+        } catch (SQLException sqle) {
+            System.out.println("Oops, unable to get column metadata.");
+            return false;
         }
-        return false;
     }
 
     //Delete row, return true if successful, false otherwise
