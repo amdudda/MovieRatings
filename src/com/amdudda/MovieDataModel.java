@@ -1,4 +1,4 @@
-package com.clara; 
+package com.amdudda;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
